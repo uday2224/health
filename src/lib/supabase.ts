@@ -1,0 +1,22 @@
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+export type User = {
+  id: string;
+  email: string;
+  phone: string;
+  name: string;
+  role: 'patient' | 'nurse' | 'admin';
+  avatar_url?: string;
+  created_at: string;
+};
+
+export type AuthSession = {
+  user: User;
+  access_token: string;
+  refresh_token: string;
+};
