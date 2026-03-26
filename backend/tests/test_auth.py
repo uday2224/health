@@ -15,7 +15,7 @@ class TestVerifyOTP:
         assert 'id_token' in data['message']
 
     def test_verify_otp_invalid_token(self, client):
-        with patch('app.services.firebase_service.verify_firebase_token',
+        with patch('app.routes.auth.verify_firebase_token',
                    side_effect=Exception('invalid token')):
             res = client.post('/api/auth/verify-otp',
                               data=json.dumps({'id_token': 'bad-token'}),
@@ -28,7 +28,7 @@ class TestVerifyOTP:
             'uid': 'firebase-uid-123',
             'phone_number': '+910000000001',
         }
-        with patch('app.services.firebase_service.verify_firebase_token',
+        with patch('app.routes.auth.verify_firebase_token',
                    return_value=mock_decoded):
             res = client.post('/api/auth/verify-otp',
                               data=json.dumps({'id_token': 'valid-token'}),

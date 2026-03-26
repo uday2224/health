@@ -5,6 +5,7 @@ from flask_jwt_extended import (
 )
 from app.extensions import db
 from app.models.user import User
+from app.services.firebase_service import verify_firebase_token
 from app.utils.response import success_response, error_response
 import logging
 
@@ -22,7 +23,6 @@ def verify_otp():
         return error_response('id_token is required', status_code=400)
 
     try:
-        from app.services.firebase_service import verify_firebase_token
         decoded = verify_firebase_token(id_token)
     except Exception as e:
         logger.warning('Firebase token verification failed: %s', e)

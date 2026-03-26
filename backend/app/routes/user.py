@@ -5,6 +5,7 @@ from app.extensions import db
 from app.models.user import User
 from app.models.address import Address
 from app.models.notification import Notification
+from app.services.cloudinary_service import upload_image
 from app.utils.response import success_response, error_response, paginate
 import logging
 
@@ -150,7 +151,6 @@ def upload_avatar():
 
     file = request.files['file']
     try:
-        from app.services.cloudinary_service import upload_image
         result = upload_image(file, folder='avatars', public_id=f'user_{user_id}')
         user.avatar_url = result['secure_url']
         db.session.commit()

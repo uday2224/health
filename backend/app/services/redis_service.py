@@ -1,6 +1,6 @@
 import json
 import logging
-from app.extensions import redis_client
+from app.extensions import get_redis_client
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +11,7 @@ def store_otp(phone: str, otp: str, ttl: int = OTP_TTL) -> bool:
     """Store an OTP for a phone number with a TTL (seconds)."""
     key = f'otp:{phone}'
     try:
-        redis_client.setex(key, ttl, otp)
+        get_redis_client().setex(key, ttl, otp)
         return True
     except Exception as e:
         logger.error('Redis store_otp error: %s', e)
@@ -22,9 +22,10 @@ def verify_otp(phone: str, otp: str) -> bool:
     """Verify the OTP for a phone number. Deletes it if valid."""
     key = f'otp:{phone}'
     try:
-        stored = redis_client.get(key)
+        client = get_redis_client()
+        stored = client.get(key)
         if stored and stored == otp:
-            redis_client.delete(key)
+            client.delete(key)
             return True
         return False
     except Exception as e:
@@ -35,7 +36,7 @@ def verify_otp(phone: str, otp: str) -> bool:
 def cache_set(key: str, value, ttl: int = 3600) -> bool:
     """Cache a JSON-serializable value."""
     try:
-        redis_client.setex(key, ttl, json.dumps(value))
+        get_redis_client().setex(key, ttl, json.dumps(value))
         return True
     except Exception as e:
         logger.error('Redis cache_set error: %s', e)
@@ -45,7 +46,7 @@ def cache_set(key: str, value, ttl: int = 3600) -> bool:
 def cache_get(key: str):
     """Retrieve a cached value. Returns None if not found."""
     try:
-        raw = redis_client.get(key)
+        raw = get_redis_client().get(key)
         return json.loads(raw) if raw else None
     except Exception as e:
         logger.error('Redis cache_get error: %s', e)
@@ -55,7 +56,7 @@ def cache_get(key: str):
 def cache_delete(key: str) -> bool:
     """Delete a cached value."""
     try:
-        redis_client.delete(key)
+        get_redis_client().delete(key)
         return True
     except Exception as e:
         logger.error('Redis cache_delete error: %s', e)
