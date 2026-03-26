@@ -22,10 +22,11 @@ def create_app(env='development'):
     jwt.init_app(app)
     migrate.init_app(app, db)
     
+    async_mode = 'threading' if app.config.get('TESTING') else 'eventlet'
     socketio.init_app(app,
         cors_allowed_origins="*",
-        async_mode='eventlet',
-        logger=True,
+        async_mode=async_mode,
+        logger=not app.config.get('TESTING'),
         engineio_logger=False,
         ping_timeout=60,
         ping_interval=25

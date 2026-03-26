@@ -22,7 +22,7 @@ class User(db.Model):
     
     # Relationships
     addresses = db.relationship('Address', backref='user', lazy=True, cascade='all, delete-orphan')
-    nurse_profile = db.relationship('Nurse', backref='user', uselist=False, cascade='all, delete-orphan')
+    nurse_profile = db.relationship('Nurse', foreign_keys='Nurse.user_id', backref='user', uselist=False, cascade='all, delete-orphan')
     bookings_as_patient = db.relationship('Booking', foreign_keys='Booking.patient_id', backref='patient', lazy=True)
     notifications = db.relationship('Notification', backref='user', lazy=True, cascade='all, delete-orphan')
     

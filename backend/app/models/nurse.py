@@ -30,7 +30,7 @@ class Nurse(db.Model):
     # Relationships
     bookings = db.relationship('Booking', backref='nurse', lazy=True)
     locations = db.relationship('NurseLocation', backref='nurse', lazy=True, cascade='all, delete-orphan')
-    reviews = db.relationship('Review', backref='nurse', lazy=True)
+    reviews = db.relationship('Review', foreign_keys='Review.nurse_id', backref='nurse', lazy=True)
     
     def to_dict(self, include_user=False):
         data = {

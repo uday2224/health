@@ -1,0 +1,2 @@
+web: gunicorn --config gunicorn.conf.py "app:create_app('production')"
+worker: celery -A app.extensions.celery worker --loglevel=info
